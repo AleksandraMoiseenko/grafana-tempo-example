@@ -1,8 +1,15 @@
 server:
   port: 8080
 
-opentracing:
-  jaeger:
-  udp-sender:
-    host: jaeger
-    port: 6831
+spring:
+  application:
+    name: grafana-tempo-example
+
+logging:
+  pattern:
+    console: '%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(%5p) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m [%X{traceId}:%X{spanId}] %n%wEx'
+  level:
+    web: DEBUG
+    io:
+      opentelemetry: DEBUG
+    root: INFO

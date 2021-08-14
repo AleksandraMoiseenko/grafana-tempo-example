@@ -19,14 +19,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-        <dependency>
-            <groupId>io.opentelemetry</groupId>
-            <artifactId>opentelemetry-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.opentelemetry</groupId>
-            <artifactId>opentelemetry-extension-annotations</artifactId>
-        </dependency>
     </dependencies>
 
     <properties>
@@ -34,36 +26,11 @@
         <maven.compiler.target>16</maven.compiler.target>
     </properties>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>io.opentelemetry</groupId>
-                <artifactId>opentelemetry-bom</artifactId>
-                <version>0.17.1</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
     <build>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <fork>true</fork>
-                    <skip>false</skip>
-                    <mainClass>grafana.tempo.example.Application</mainClass>
-                    <argLine>
-                        -javaagent:./agent/opentelemetry-javaagent-all.jar
-                        -Dotel.trace.exporter=jaeger
-                        -Dotel.exporter.jaeger.endpoint=http://tempo:14250
-                        -Dotel.resource.attributes=service.name=${project.artifactId}
-                        -Dotel.javaagent.debug=false
-                        -Dotel.metrics.exporter=none
-                    </argLine>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>com.spotify</groupId>
