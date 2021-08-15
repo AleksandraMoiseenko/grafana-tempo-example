@@ -1,7 +1,10 @@
 version: "3.8"
 
-services:
+networks:
+  docker-tempo:
+    name: "docker-tempo"
 
+services:
   tempo:
     image: grafana/tempo:0.7.0
     command: [ "--config.file=/etc/tempo-local.yaml" ]
@@ -13,17 +16,31 @@ services:
       - "3100:3100"
       - "55680:55680"
       - "14250:14250"
+    networks:
+      - docker-tempo
 
   tempo-query:
     image: grafana/tempo-query:0.7.0
     command: [ "--grpc-storage-plugin.configuration-file=/etc/tempo-query.yaml"]
     volumes:
-      - /etc/tempo-query.yaml:/etc/tempo-query.yaml
+      - ./etc/tempo-query.yaml:/etc/tempo-query.yaml
     ports:
       - "16686:16686"  # jaeger-ui
+    networks:
+      - docker-tempo
 
-  grafana-example:
-    image: grafana-tempo-example:latest
+  grafana:
+    image: grafana/grafana:7.4.0-ubuntu
+    volumes:
+      - ./data/grafana-data/datasources:/etc/grafana/provisioning/datasources
+    environment:
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - GF_AUTH_DISABLE_LOGIN_FORM=true
     ports:
-      - "8080:8080"
+      - "3000:3000"
+    networks:
+      - docker-tempo
+    depends_on:
+      - tempo-query
 
